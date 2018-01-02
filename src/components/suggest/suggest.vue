@@ -75,11 +75,7 @@
         })
       },
       getIconCls (item) {
-        if (item.type === TYPE_SINGER) {
-          return 'icon-mine'
-        } else {
-          return 'icon-music'
-        }
+        return item.type === TYPE_SINGER ? 'icon-mine' : 'icon-music'
       },
       getDisplayName (item) {
         if (item.type === TYPE_SINGER) {
