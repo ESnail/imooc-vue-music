@@ -1,5 +1,5 @@
-import {getLyric} from 'api/song'
-import {ERR_OK} from 'api/config'
+import {getLyric, getSongVKey} from 'api/song'
+import {ERR_OK, guid} from 'api/config'
 import {Base64} from 'js-base64'
 
 export default class Song {
@@ -11,7 +11,24 @@ export default class Song {
     this.album = album
     this.duration = duration
     this.image = image
-    this.url = url
+  }
+
+  getSongUrl () {
+    if (this.url) {
+      return Promise.resolve(this.url)
+    }
+
+    return new Promise((resolve, reject) => {
+      getSongVKey(this.mid).then((res) => {
+        if (res.code === ERR_OK) {
+          let vkey = res.data.items[0].vkey
+          this.url = `http://dl.stream.qqmusic.qq.com/C400${this.mid}.m4a?vkey=${vkey}&guid=${guid}&uin=0&fromtag=66`
+          resolve(this.url)
+        } else {
+          reject(new Error('no song url'))
+        }
+      })
+    })
   }
 
   getLyric() {
@@ -41,8 +58,11 @@ export function createSong (musicData) {
     name: musicData.songname,
     album: musicData.albumname,
     duration: musicData.interval,
-    image: `http://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=38`
+    image: `http://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`
+    // 失效
+    // url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=38`
+    // 可用
+    // url: `http://isure.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=32`
   })
 }
 

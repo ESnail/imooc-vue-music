@@ -42,7 +42,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapGetters, mapMutations, mapActions} from 'vuex'
+  import {mapActions} from 'vuex'
   import {playMode} from 'common/js/config'
   import Scroll from 'base/scroll/scroll'
   import Confirm from 'base/confirm/confirm'
@@ -60,13 +60,7 @@
     computed: {
       modeText () {
         return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '单曲循环'
-      },
-      ...mapGetters([
-        'sequenceList',
-        'currentSong',
-        'playList',
-        'mode'
-      ])
+      }
     },
     methods: {
       show () {
@@ -113,10 +107,6 @@
       addSong () {
         this.$refs.addSong.show()
       },
-      ...mapMutations({
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayingState: 'SET_PLAYING_STATE'
-      }),
       ...mapActions([
         'deleteSong',
         'deleteSongList'
@@ -127,7 +117,9 @@
         if (!this.showFlag || newSong.id === oldSong.id) {
           return
         }
-        this.scrollToCurrent(newSong)
+        setTimeout(() => {
+          this.scrollToCurrent(newSong)
+        }, 20)
       }
     },
     components: {

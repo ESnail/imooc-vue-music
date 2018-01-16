@@ -1,4 +1,5 @@
-import {commonParams} from './config'
+import jsonp from 'common/js/jsonp'
+import {commonParams, options, guid} from './config'
 import axios from 'axios'
 
 export function getLyric (mid) {
@@ -19,4 +20,30 @@ export function getLyric (mid) {
   }).then((res) => {
     return Promise.resolve(res.data)
   })
+}
+
+export function getSongVKey (songmid) {
+  const url = 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg'
+
+  const timeRandom = +new Date()
+  const data = Object.assign({}, commonParams, {
+    loginUin: 0,
+    hostUin: 0,
+    format: 'json',
+    platform: 'yqq',
+    needNewCode: 0,
+    cid: '205361747',
+    uin: 0,
+    songmid,
+    filename: `C400${songmid}.m4a`,
+    guid: guid,
+    g_tk: 189460951,
+    callback: `MusicJsonCallback${timeRandom}`
+  })
+
+  const opts = Object.assign({}, options, {
+    name: `MusicJsonCallback${timeRandom}`
+  })
+
+  return jsonp(url, data, opts)
 }

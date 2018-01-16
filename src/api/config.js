@@ -11,3 +11,5 @@ export const options = {
 }
 
 export const ERR_OK = 0
+
+export const guid = 6812140052

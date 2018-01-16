@@ -92,7 +92,8 @@
       </div>
     </transition>
     <playlist ref="playlist"></playlist>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
+    <!-- <audio ref="audio" :src="currentSong.url" @play="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio> -->
+    <audio ref="audio" :src="currentSongUrl" @play="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
 
@@ -121,7 +122,8 @@
         currentLyric: null,
         currentLineNum: 0,
         currentShow: 'cd',
-        playingLyric: ''
+        playingLyric: '',
+        currentSongUrl: ''
       }
     },
     computed: {
@@ -229,6 +231,7 @@
         // 如果只有一首歌，就单曲循环
         if (this.playList.length === 1) {
           this.loop()
+          return
         } else {
           let index = this.currentIndex + 1
           // 播放最后一首
@@ -240,8 +243,8 @@
           if (!this.playing) {
             this.togglePlaying()
           }
-          this.songReady = false
         }
+        this.songReady = false
       },
       prev () {
         if (!this.songReady) {
@@ -250,6 +253,7 @@
         // 如果只有一首歌，就单曲循环
         if (this.playList.length === 1) {
           this.loop()
+          return
         } else {
           let index = this.currentIndex - 1
           // 播放第一首
@@ -261,8 +265,8 @@
           if (!this.playing) {
             this.togglePlaying()
           }
-          this.songReady = false
         }
+        this.songReady = false
       },
       ready () {
         this.songReady = true
@@ -290,8 +294,19 @@
           this.currentLyric.seek(currentTime * 1000)
         }
       },
+      getSongUrl () {
+        this.currentSong.getSongUrl().then((url) => {
+          if (this.currentSong.url !== url) {
+            return
+          }
+          this.currentSongUrl = url
+        })
+      },
       getLyric () {
         this.currentSong.getLyric().then((lyric) => {
+          if (this.currentSong.lyric !== lyric) {
+            return
+          }
           this.currentLyric = new Lyric(lyric, this.handleLyric)
           if (this.playing) {
             this.currentLyric.play()
@@ -308,7 +323,7 @@
           let lineEl = this.$refs.lyricLine[lineNum - 5]
           this.$refs.lyricList.scrollToElement(lineEl, 1000)
         } else {
-          this.$refs.lyricList.scrollToElement(0, 0, 1000)
+          this.$refs.lyricList.scrollTo(0, 0, 1000)
         }
         this.playingLyric = txt
       },
@@ -317,6 +332,8 @@
       },
       middleTouchStart (e) {
         this.touch.initiated = true
+        // 用来判断是否是一次移动
+        this.touch.moved = false
         const touch = e.touches[0]
         this.touch.startX = touch.pageX
         this.touch.startY = touch.pageY
@@ -332,6 +349,9 @@
         if (Math.abs(deltaY) > Math.abs(deltaX)) {
           return
         }
+        if (!this.touch.moved) {
+          this.touch.moved = true
+        }
         const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
         const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
         this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
@@ -341,6 +361,9 @@
         this.$refs.middleL.style[transitionDuration] = 0
       },
       middleTouchEnd (e) {
+        if (!this.touch.moved) {
+          return
+        }
         let offsetWidth
         let opacity
         // 从左向右滑，百分之十，就切换
@@ -368,6 +391,7 @@
         this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms`
         this.$refs.middleL.style.opacity = opacity
         this.$refs.middleL.style[transitionDuration] = `${time}ms`
+        this.touch.initiated = false
       },
       // 补零
       _pad (num, n = 2) {
@@ -408,6 +432,7 @@
         if (newSong.id === oldSong.id) {
           return
         }
+        this.getSongUrl()
         if (this.currentLyric) {
           this.currentLyric.stop()
           this.currentTime = 0
@@ -416,15 +441,24 @@
         }
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
-          this.$refs.audio.play()
-          this.getLyric()
+          if (this.currentSongUrl) {
+            this.$refs.audio.play()
+            this.getLyric()
+          }
         }, 1000)
       },
       playing (newPlaying) {
         const audio = this.$refs.audio
         this.$nextTick(() => {
-          newPlaying ? audio.play() : audio.pause()
+          newPlaying && this.currentSongUrl ? audio.play() : audio.pause()
         })
+      },
+      fullScreen(newVal) {
+        if (newVal) {
+          setTimeout(() => {
+            this.$refs.lyricList.refresh()
+          }, 20)
+        }
       }
     },
     components: {

@@ -79,7 +79,7 @@
         this.$router.back()
       },
       random () {
-        let list = this.currentIndex === 0 ? this.favoriteList : this.playList
+        let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
         if (list.length === 0) {
           return
         }
