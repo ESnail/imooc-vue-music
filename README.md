@@ -78,4 +78,13 @@ export function shuffle (arr) {
 
 ...
 
+**使用cube-ui 重构**
+
+- 参考文章[vue-music 音乐 App 之 cube-ui 重构](http://www.imooc.com/article/22569)
+- 进行了歌手页面重构
+- 推荐、排行、搜索、用户中心等的scroll重构
+- 删除搜索历史的confirm重构
+- 对cube-ui有了一定的了解
+- master分支未使用cube-ui重构，重构完全在cube-ui
+
 收获很多，很感谢老师的详细的讲解，^_^_
