@@ -29,9 +29,9 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 **通过该练习，了解了一些vue插件及基础使用：****
 
-- jsonp：[](https://github.com/webmodules/jsonp)
-- vue-lazyLoad(图片懒加载): [](https://github.com/hilongjw/vue-lazyload)
-- good-storage: [](https://github.com/ustbhuangyi/storage)
+- jsonp：[https://github.com/webmodules/jsonp](https://github.com/webmodules/jsonp)
+- vue-lazyLoad(图片懒加载): [https://github.com/hilongjw/vue-lazyload](https://github.com/hilongjw/vue-lazyload)
+- good-storage: [https://github.com/ustbhuangyi/storage](https://github.com/ustbhuangyi/storage)
 - ......
 
 **通过该练习，学习了一些新的小技巧：**
@@ -73,8 +73,8 @@ export function shuffle (arr) {
 
 **在练习的过程中，通过查找资料，解决了问题并帮助到他人：**
 
-- 设置后端代理，绕过refer，获取接口数据，详情可见：[](http://www.imooc.com/wenda/detail/382255)的回答
-- 修复进度条bug，详情可见：[](http://www.imooc.com/article/22222)
+- 设置后端代理，绕过refer，获取接口数据，详情可见：[http://www.imooc.com/wenda/detail/382255](http://www.imooc.com/wenda/detail/382255)的回答
+- 修复进度条bug，详情可见：[http://www.imooc.com/article/22222](http://www.imooc.com/article/22222)
 
 ...
 
